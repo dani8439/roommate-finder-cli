@@ -2,12 +2,11 @@ class RoomScraper
 
   def initialize(index_url)
     @doc = Nokogiri::HTML(open(index_url))
-    binding.pry
   end
 
   def call
     rows.each do |row_doc|
-      scrape_row(row_doc)
+      Room.create_from_hash(scrape_row(row_doc)) #==> Should put the room in my database
     end
   end
 
@@ -25,9 +24,9 @@ private
   def scrape_row(row)
     # Scrape an individual row
     {
-    :date_created => row.search("time"),
+    :date_created => row.search("time").attribute("datetime").text,
     :title => row.search("a.hdrlnk").text,
-    :url => row.search("a.hdrlnk").attribute("href"),
+    :url => "#{@index_url}#{row.search("a.hdrlnk").attribute("href").text}",
     :price => row.search("span.price").text,
     }
   end
