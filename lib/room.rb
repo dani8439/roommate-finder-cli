@@ -19,8 +19,22 @@ class Room
   def save
     # I need a database!!
     puts "YOU ARE ABOUT TO SAVE #{self}"
+    sql = <<-SQL
+      INSERT INTO rooms (title, date_created, price, url) VALUES (?, ?, ?, ?)
+    SQL
   end
 
   def self.create_table
+    sql = <<-SQL
+      CREATE TABLE IF NOT EXISTS rooms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        date_created DATETIME,
+        price TEXT,
+        url TEXT
+      )
+    SQL
+
+    DB[:connection].execute(sql)
   end
 end
